@@ -7,4 +7,6 @@ class LetterNode(list):
             childnodes = []
         list.__init__(self, childnodes)
 
+    def __repr__(self):
+        return "%f %f" % (self.x, self.y)
 
