@@ -13,8 +13,12 @@ def dist(dx, dy):
     return dx*dx + dy*dy
 
 def _check_closest(letter1, letter2, x, y):
-    return (dist(letter1.x - x, letter1.y - y) < 
-           dist(letter2.x - x, letter2.y - y))
+    l1_x = letter1.x + letter1.box_width/2
+    l1_y = letter1.y + letter1.box_height/2
+    l2_x = letter2.x + letter2.box_width/2
+    l2_y = letter2.y + letter2.box_height/2
+    return (dist(l1_x - x, l1_y - y) < 
+           dist(l2_x - x, l2_y - y))
 
 class Dash:
 
@@ -42,7 +46,11 @@ class Dash:
 
         test_letters[25].weight = weight/2
         test_letters[24].weight = weight/2
-        test_letters[4].weight = weight*2
+        test_letters[23].weight = weight/2
+        test_letters[22].weight = weight/2
+        test_letters[21].weight = weight/2
+        test_letters[20].weight = weight/2
+        test_letters[8].weight = weight*4
 
         self.letters = test_letters
         self.closest = [None, None]
