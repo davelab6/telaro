@@ -8,5 +8,6 @@ class LetterNode(list):
         list.__init__(self, childnodes)
 
     def __repr__(self):
-        return "%f %f" % (self.x, self.y)
+        return "{%f-%f %fx%f}" % (self.x, self.y,
+                                  self.box_width, self.box_height)
 
