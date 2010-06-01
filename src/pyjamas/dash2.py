@@ -88,6 +88,9 @@ class Dash:
         self.mouse_pos_x = w2
         self.mouse_pos_y = h2
 
+        test_letters[8].append((LetterNode("a", 0.5) ) )
+        test_letters[8].append((LetterNode("b", 0.5) ) )
+
         self.draw()
         Timer(50, self)
 
@@ -126,7 +129,7 @@ class Dash:
         if self.move_allowed:
             w2 = self.cwidth / 2.0
             h2 = self.cheight / 2.0
-            scale = diff_time
+            scale = diff_time / (self.scale_x)
             x_vel = scale * (self.mouse_pos_x - w2)
             y_vel = scale * (self.mouse_pos_y - h2)
 
