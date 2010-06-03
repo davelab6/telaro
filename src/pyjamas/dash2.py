@@ -185,18 +185,8 @@ class Dash:
         self.canvas.setLineWidth(1)
         self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
 
-        #self.canvas.translate(-self.offset_x-(w2/self.scale), -self.offset_y-(h2/self.scale))
-        #self.canvas.scale(self.scale, self.scale)
-        #self.canvas.translate(-self.offset_x/self.scale, -self.offset_y/self.scale)
-        #self.canvas.translate((+w2 / self.scale), (+h2 / self.scale))
-        #self.canvas.translate(165, 165)
-
         self.display_letters(0, 0, self.cwidth, self.cheight,
                                 self.letters, 0)
-
-        #self.canvas.setLineWidth(1)
-        #self.canvas.setStrokeStyle(Color("#f00"))
-        #self.canvas.strokeRect(self.offset_x, self.offset_y, x1-1, y1-1)
 
         self.canvas.restoreContext()
 
