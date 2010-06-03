@@ -11,3 +11,11 @@ class LetterNode(list):
         return "{%f-%f %fx%f}" % (self.x, self.y,
                                   self.box_width, self.box_height)
 
+    def __cmp__(self, l):
+        return cmp(self.letter, l)
+
+def pprint_letters(letters, tab=0):
+    for l in letters:
+        ch = repr(l.letter)[1:-1]
+        print "%s %s %.2f" % (" "*tab*2, ch, l.weight)
+        pprint_letters(l, tab+1)
