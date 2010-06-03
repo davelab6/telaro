@@ -226,7 +226,8 @@ class Dash:
 
     def get_more_letters(self, letter=None):
         res = []
-        if letter is None or letter.word_ptr is None:
+        if letter is None or letter.word_ptr is None or \
+           len(letter.word_ptr) == 0:
             chain = self.word_chain
         else:
             chain = letter.word_ptr

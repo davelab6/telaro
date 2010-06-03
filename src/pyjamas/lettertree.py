@@ -13,6 +13,8 @@ class LetterNode(list):
                                   self.box_width, self.box_height)
 
     def __cmp__(self, l):
+        if isinstance(l, LetterNode):
+            return cmp(self.letter, l.letter)
         return cmp(self.letter, l)
 
 def pprint_letters(letters, tab=0):
