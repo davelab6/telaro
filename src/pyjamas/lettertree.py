@@ -5,6 +5,7 @@ class LetterNode(list):
         self.weight = weight
         if childnodes is None:
             childnodes = []
+        self.word_ptr = None
         list.__init__(self, childnodes)
 
     def __repr__(self):

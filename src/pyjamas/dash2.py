@@ -5,6 +5,7 @@ from pyjamas.ui.RootPanel import RootPanel
 
 #from letter import Letters
 from lettertree import LetterNode
+from words import get_test_letters
 
 from pyjamas.Canvas.Color import Color
 from pyjamas.Canvas.GWTCanvas import GWTCanvas
@@ -37,7 +38,7 @@ def calc_scale(letter1, letter2, x, y, height):
         scale_letter = letter2
     min_d = min(height/2, min(d1, d2))
     scale = ((height/2 - min_d) / (height/2))
-    print "calc_scale", x, y, d1, d2, min_d, height, scale_letter.box_height, scale
+    #print "calc_scale", x, y, d1, d2, min_d, height, scale_letter.box_height, scale
     #return 1.0
     #return 0.5
     max_scale = height / scale_letter.box_height / 2
@@ -83,8 +84,9 @@ class Dash:
         test_letters[20].weight = weight/2
         test_letters[8].weight = weight*4
 
-        self.letters = test_letters
-        self.word_chain = []
+        self.word_chain = get_test_letters()
+        self.letters = self.get_more_letters()
+
         self.cur_time = time()
         self.mouse_pos_x = w2
         self.mouse_pos_y = h2
@@ -127,7 +129,7 @@ class Dash:
 
         scale = diff_time / (self.scale)
 
-        print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
+        #print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
 
         scale_diff = self.target_scale - self.scale
         scale_diff = scale_diff * scale * 10
@@ -141,14 +143,19 @@ class Dash:
 
             self.offset_x += x_vel
             self.offset_y += y_vel
-            self.draw()
+            self.redraw_required = True
+
         elif abs(scale_diff) > 1e-15:
-            # auto-rescale but move not allowed, we still want a redraw.
+            self.redraw_required = True
+
+        if self.redraw_required:
             self.draw()
 
         Timer(50, self)
 
     def draw(self):
+
+        self.redraw_required = False
 
         w2 = self.cwidth / 2.0
         h2 = self.cheight / 2.0
@@ -164,12 +171,12 @@ class Dash:
                                     self.cheight*0.8)
         self.target_scale = scale
 
-        print "scale:", scale
+        #print "scale:", scale
 
         x1 = self.offset_x + (self.cwidth / self.scale)
         y1 = self.offset_y + (self.cheight / self.scale)
 
-        print "redbox", self.offset_x, self.offset_y, x1, y1
+        #print "redbox", self.offset_x, self.offset_y, x1, y1
 
         self.canvas.clear()
         self.canvas.saveContext()
@@ -193,7 +200,7 @@ class Dash:
 
         self.canvas.restoreContext()
 
-        print self.closest
+        #print self.closest
 
     def sr(self, x, y, w, h):
         #sw = (self.cwidth/2/self.scale)
@@ -204,18 +211,18 @@ class Dash:
                 -sh*self.scale+(y+(-self.offset_y+sh/self.scale))*self.scale,
                 w*self.scale,
                 h*self.scale)
-        print "rect", x,y,w,h, rect
+        #print "rect", x,y,w,h, rect
         return rect
 
     def check_closest(self, letter, x, y):
         """ this function gets the two closest letters to the current cursor.
         """
-        print self.closest
+        #print self.closest
         if self.closest[0] is None:
-            print "none"
+            #print "none"
             self.closest[0] = letter
         else:
-            print x, y, letter.x, letter.y
+            #print x, y, letter.x, letter.y
             if _check_closest(self.closest[0], letter, x, y):
                 return
             self.closest[1] = self.closest[0]
@@ -243,6 +250,18 @@ class Dash:
                             self.offset_y + (self.cheight/2) )#* self.scale)
             oy += height
 
+    def get_more_letters(self, letter=None):
+        res = []
+        if letter is None or letter.word_ptr is None:
+            chain = self.word_chain
+        else:
+            chain = letter.word_ptr
+        for l in chain:
+            ln = LetterNode(l.letter, l.weight)
+            ln.word_ptr = l
+            res.append(ln)
+        return res
+
     def display_letters(self, px, py, pwidth, pheight, letters, colouridx):
 
         if colouridx == 0:
@@ -258,6 +277,18 @@ class Dash:
         self.canvas.setLineWidth(1)
         x, y, w, h = self.sr(px, py, pwidth, pheight)
         self.canvas.fillRect(x, y, w, h)
+
+        if h < 10:
+            return
+
+        if not letters:
+            for l in self.get_more_letters(letters):
+                letters.append(l)
+                # although new letters have been added, we
+                # can't do anything right now: it's necessary to
+                # call check_closest on next loop.
+                self.redraw_required = True
+                return
 
         if not letters:
             return
