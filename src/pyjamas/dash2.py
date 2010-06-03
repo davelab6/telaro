@@ -17,17 +17,17 @@ def dist(dx, dy):
     return dx*dx + dy*dy
 
 def _check_closest(letter1, letter2, x, y):
-    l1_x = letter1.x + letter1.box_width/2
+    l1_x = letter1.x #+ letter1.box_width/2
     l1_y = letter1.y + letter1.box_height/2
-    l2_x = letter2.x + letter2.box_width/2
+    l2_x = letter2.x #+ letter2.box_width/2
     l2_y = letter2.y + letter2.box_height/2
     return (dist(l1_x - x, l1_y - y) < 
            dist(l2_x - x, l2_y - y))
 
 def calc_scale(letter1, letter2, x, y, height):
-    l1_x = letter1.x + letter1.box_width/2
+    l1_x = letter1.x #+ letter1.box_width/2
     l1_y = letter1.y + letter1.box_height/2
-    l2_x = letter2.x + letter2.box_width/2
+    l2_x = letter2.x #+ letter2.box_width/2
     l2_y = letter2.y + letter2.box_height/2
     d1 = pow(dist(l1_x - x, l1_y - y), 0.5)
     d2 = pow(dist(l2_x - x, l2_y - y), 0.5)
@@ -62,8 +62,8 @@ class Dash:
         #self.offset_y = 153.0-220#-100.0
         self.offset_x = 0.0
         self.offset_y = 0.0
-        self.scale_x = 1.0
-        self.scale_y = 1.0
+        self.scale = 1.0
+        self.target_scale = 1.0
         self.move_allowed = False
 
         w2 = self.cwidth / 2.0
@@ -84,6 +84,7 @@ class Dash:
         test_letters[8].weight = weight*4
 
         self.letters = test_letters
+        self.word_chain = []
         self.cur_time = time()
         self.mouse_pos_x = w2
         self.mouse_pos_y = h2
@@ -124,17 +125,25 @@ class Dash:
         diff_time = new_time - self.cur_time
         self.cur_time = new_time
 
+        scale = diff_time / (self.scale)
+
         print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
+
+        scale_diff = self.target_scale - self.scale
+        scale_diff = scale_diff * scale * 10
+        self.scale += scale_diff
 
         if self.move_allowed:
             w2 = self.cwidth / 2.0
             h2 = self.cheight / 2.0
-            scale = diff_time / (self.scale_x)
             x_vel = scale * (self.mouse_pos_x - w2)
             y_vel = scale * (self.mouse_pos_y - h2)
 
             self.offset_x += x_vel
             self.offset_y += y_vel
+            self.draw()
+        elif abs(scale_diff) > 1e-15:
+            # auto-rescale but move not allowed, we still want a redraw.
             self.draw()
 
         Timer(50, self)
@@ -153,13 +162,12 @@ class Dash:
                                   self.offset_x+w2,
                                     self.offset_y+h2,
                                     self.cheight*0.8)
-        self.scale_x = scale
-        self.scale_y = scale
+        self.target_scale = scale
 
         print "scale:", scale
 
-        x1 = self.offset_x + (self.cwidth / self.scale_x)
-        y1 = self.offset_y + (self.cheight / self.scale_y)
+        x1 = self.offset_x + (self.cwidth / self.scale)
+        y1 = self.offset_y + (self.cheight / self.scale)
 
         print "redbox", self.offset_x, self.offset_y, x1, y1
 
@@ -170,10 +178,10 @@ class Dash:
         self.canvas.setLineWidth(1)
         self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
 
-        #self.canvas.translate(-self.offset_x-(w2/self.scale_x), -self.offset_y-(h2/self.scale_y))
-        #self.canvas.scale(self.scale_x, self.scale_y)
-        #self.canvas.translate(-self.offset_x/self.scale_x, -self.offset_y/self.scale_y)
-        #self.canvas.translate((+w2 / self.scale_x), (+h2 / self.scale_y))
+        #self.canvas.translate(-self.offset_x-(w2/self.scale), -self.offset_y-(h2/self.scale))
+        #self.canvas.scale(self.scale, self.scale)
+        #self.canvas.translate(-self.offset_x/self.scale, -self.offset_y/self.scale)
+        #self.canvas.translate((+w2 / self.scale), (+h2 / self.scale))
         #self.canvas.translate(165, 165)
 
         self.display_letters(0, 0, self.cwidth, self.cheight,
@@ -188,14 +196,14 @@ class Dash:
         print self.closest
 
     def sr(self, x, y, w, h):
-        #sw = (self.cwidth/2/self.scale_x)
-        #sh = (self.cheight/2/self.scale_y)
+        #sw = (self.cwidth/2/self.scale)
+        #sh = (self.cheight/2/self.scale)
         sw = self.cwidth/2
         sh = self.cheight/2
-        rect = (-sw*self.scale_x+(x+(-self.offset_x+sw/self.scale_x))*self.scale_x,
-                -sh*self.scale_y+(y+(-self.offset_y+sh/self.scale_x))*self.scale_y,
-                w*self.scale_x,
-                h*self.scale_y)
+        rect = (-sw*self.scale+(x+(-self.offset_x+sw/self.scale))*self.scale,
+                -sh*self.scale+(y+(-self.offset_y+sh/self.scale))*self.scale,
+                w*self.scale,
+                h*self.scale)
         print "rect", x,y,w,h, rect
         return rect
 
@@ -231,8 +239,8 @@ class Dash:
                                  width, height,
                                  letter)
             self.check_closest(letter,
-                            self.offset_x + (self.cwidth/2), #* self.scale_x,
-                            self.offset_y + (self.cheight/2) )#* self.scale_y)
+                            self.offset_x + (self.cwidth/2), #* self.scale,
+                            self.offset_y + (self.cheight/2) )#* self.scale)
             oy += height
 
     def display_letters(self, px, py, pwidth, pheight, letters, colouridx):
