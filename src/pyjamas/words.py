@@ -16,6 +16,11 @@ def assign_equal_weight(letters):
         l.weight = weight
         assign_equal_weight(l)
 
+def recurse_sort(letters):
+    letters.sort()
+    for l in letters:
+        recurse_sort(l)
+
 def get_test_letters():
     res = []
     for w in words:
@@ -33,6 +38,7 @@ def get_test_letters():
         p.append(LetterNode(".", 0.0))
 
     assign_equal_weight(res)
+    recurse_sort(res)
 
     return res
 

@@ -116,7 +116,7 @@ class Dash:
         #print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
 
         scale_diff = self.target_scale - self.scale
-        scale_diff = scale_diff * scale * 10
+        scale_diff = scale_diff * diff_time 
         self.scale += scale_diff
 
         if self.move_allowed:
@@ -149,13 +149,15 @@ class Dash:
         self.get_closest(0.0, 0.0, self.cwidth, self.cheight,
                                 self.letters)
 
+        print self.closest
+
         scale = calc_scale(self.closest[0], self.closest[1],
                                   self.offset_x+w2,
                                     self.offset_y+h2,
                                     self.cheight*0.8)
         self.target_scale = scale
 
-        #print "scale:", scale
+        print "scale:", self.scale, self.target_scale
 
         x1 = self.offset_x + (self.cwidth / self.scale)
         y1 = self.offset_y + (self.cheight / self.scale)
@@ -169,7 +171,7 @@ class Dash:
         self.canvas.setLineWidth(1)
         self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
 
-        self.display_letters(0.0, 0.0, self.cwidth, self.cheight,
+        self.display_letters(None, 0.0, 0.0, self.cwidth, self.cheight,
                                 self.letters, 0)
 
         self.canvas.restoreContext()
@@ -208,21 +210,22 @@ class Dash:
             return
 
         length = len(letters)
-        oy = 0
+        amount_use = 1.0
+        oy = 0.0 # pheight * (1.0-amount_use) / 2.0
         for i, letter in enumerate(letters):
-            height = letter.weight * pheight
+            height = letter.weight * pheight 
             width  = letter.weight * pwidth
-            letter.x = px+(pwidth-width)
+            letter.x = px+(pwidth - width)
             letter.y = py+oy
             letter.box_width = width
-            letter.box_height = height
+            letter.box_height = height * amount_use
             self.get_closest(letter.x, letter.y,
-                                 width, height,
+                                 letter.box_width, letter.box_height,
                                  letter)
             self.check_closest(letter,
                             self.offset_x + (self.cwidth/2.0), #* self.scale,
                             self.offset_y + (self.cheight/2.0) )#* self.scale)
-            oy += height
+            oy += letter.box_height
 
     def get_more_letters(self, letter=None):
         res = []
@@ -239,7 +242,7 @@ class Dash:
         #pprint_letters(res)
         return res
 
-    def display_letters(self, px, py, pwidth, pheight, letters, colouridx):
+    def display_letters(self, ch, px, py, pwidth, pheight, letters, colouridx):
 
         if colouridx == 0:
             col = Color("#ccf")
@@ -255,15 +258,19 @@ class Dash:
         x, y, w, h = self.sr(px, py, pwidth, pheight)
 
         if y + h < 0:
-            return -1
+            return
         if y > self.cheight:
-            return -1
+            return
         if x + w < 0:
-            return -1
+            return
         if x > self.cwidth:
-            return -1
+            return
 
         self.canvas.fillRect(x, y, w, h)
+
+        if ch:
+            self.canvas.setFillStyle(Color("#000"))
+            self.canvas.fillText(ch, x, y + h)
 
         if h < 20:
             return
@@ -280,27 +287,18 @@ class Dash:
         length = len(letters)
         oy = 0
         for i, letter in enumerate(letters):
-            height = letter.weight * pheight
-            width  = letter.weight * pwidth
+            height = letter.box_width
+            width  = letter.box_height
             if i % 2 == 0:
                 self.canvas.setFillStyle(col)
             else:
                 self.canvas.setFillStyle(altcol)
-            letter.x = px+(pwidth-width)
-            letter.y = py+oy
-            letter.box_width = width
-            letter.box_height = height
-            more = self.display_letters(letter.x, letter.y,
+            more = self.display_letters(letter.letter, letter.x, letter.y,
                                  width, height,
                                  letter, newidx)
-            if more and more != -1:
+            if more:
                 for l in more:
                     letter.append(l)
-            if more != -1:
-                self.canvas.setFillStyle(Color("#000"))
-                x, y, w, h = self.sr(letter.x, letter.y + height,
-                                     pwidth, pheight)
-                self.canvas.fillText(letter.letter, x, y)
             oy += height
 
 
