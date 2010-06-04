@@ -1,4 +1,5 @@
 import pyjd
+import math
 
 from pyjamas.ui.AbsolutePanel import AbsolutePanel
 from pyjamas.ui.RootPanel import RootPanel
@@ -43,16 +44,37 @@ def calc_scale(letter1, letter2, x, y, height):
     l2_y = letter2.y + letter2.box_height/2
     d1 = pow(dist(l1_x - x, l1_y - y), 0.5)
     d2 = pow(dist(l2_x - x, l2_y - y), 0.5)
-    if d1 < d2:
-        scale_letter = letter1
-    else:
-        scale_letter = letter2
-    min_d = min(height/2, min(d1, d2))
-    scale = ((height/2 - min_d) / (height/2))
+    #if d1 < d2:
+    #    scale_letter = letter1
+    #else:
+    #    scale_letter = letter2
+    min_d1 = min(height/2, d1)
+    min_d2 = min(height/2, d2)
+    scale1 = ((height/2 - min_d1) / (height/2))
+    scale2 = ((height/2 - min_d2) / (height/2))
     #print "calc_scale", x, y, d1, d2, min_d, height, scale_letter.box_height, scale
     #return 1.0
     #return 0.5
-    max_scale = height / scale_letter.box_height / 2
+    max_scale1 = height / letter1.box_height / 4
+    max_scale2 = height / letter2.box_height / 4
+    max_scale1 *= scale1
+    max_scale2 *= scale2
+
+    # ok.  complicated.  the closer the cursor is, the more "relevant"
+    # the scaling.  d1 or d2 equal to zero means _spot_ on cursor.
+
+    max_scale = min(max_scale1, max_scale2) # start with min, add rest in a mo
+    scale_diff = max(max_scale1, max_scale2) - max_scale
+
+    if d1 < d2:
+        proportion = ((d2-d1)/d2)
+    else:
+        proportion = ((d1-d2)/d1)
+
+    max_scale += scale_diff * proportion
+
+    return max_scale
+
     return (max_scale - 1.0) * scale + 1.0
     
 class Dash:
@@ -128,9 +150,9 @@ class Dash:
 
         #print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
 
-        scale_diff = self.target_scale - self.scale
-        scale_diff = scale_diff * diff_time 
-        self.scale += scale_diff
+        scale_diff = math.log10(self.target_scale) - math.log10(self.scale)
+        scale_diff = scale_diff * diff_time * 2
+        self.scale = math.pow(10, math.log10(self.scale) + scale_diff)
 
         if self.move_allowed:
             w2 = self.cwidth / 2.0
