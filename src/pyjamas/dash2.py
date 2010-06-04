@@ -25,6 +25,17 @@ def _check_closest(letter1, letter2, x, y):
     return (dist(l1_x - x, l1_y - y) < 
            dist(l2_x - x, l2_y - y))
 
+def _inside(letter, x, y):
+    if x < letter.x:
+        return False
+    if y < letter.y:
+        return False
+    if x > letter.x + letter.box_width:
+        return False
+    if y > letter.y + letter.box_height:
+        return False
+    return True
+    
 def calc_scale(letter1, letter2, x, y, height):
     l1_x = letter1.x #+ letter1.box_width/2
     l1_y = letter1.y + letter1.box_height/2
@@ -71,7 +82,9 @@ class Dash:
         h2 = self.cheight / 2.0
 
         self.word_chain = get_test_letters()
+        # TODO: make a fake "top level" LetterNode, which these are added to
         self.letters = self.get_more_letters()
+        self.root_node = self.letters
 
         self.cur_time = time()
         self.mouse_pos_x = w2
@@ -147,7 +160,7 @@ class Dash:
         self.closest = [None, None]
 
         self.get_closest(0.0, 0.0, self.cwidth, self.cheight,
-                                self.letters)
+                                self.root_node)
 
         print self.closest
 
@@ -172,7 +185,7 @@ class Dash:
         self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
 
         self.display_letters(None, 0.0, 0.0, self.cwidth, self.cheight,
-                                self.letters, 0)
+                                self.root_node, 0)
 
         self.canvas.restoreContext()
 
@@ -215,16 +228,22 @@ class Dash:
         for i, letter in enumerate(letters):
             height = letter.weight * pheight 
             width  = letter.weight * pwidth
-            letter.x = px+(pwidth - width)
+            letter.x = px+(pwidth - width) #+ height * 0.1
             letter.y = py+oy
             letter.box_width = width
             letter.box_height = height * amount_use
+
+            cursor_x = self.offset_x + (self.cwidth/2.0)
+            cursor_y = self.offset_y + (self.cheight/2.0)
+
+            if _inside(letter, cursor_x, cursor_y):
+                self.inside_letter = letter
+
             self.get_closest(letter.x, letter.y,
                                  letter.box_width, letter.box_height,
                                  letter)
-            self.check_closest(letter,
-                            self.offset_x + (self.cwidth/2.0), #* self.scale,
-                            self.offset_y + (self.cheight/2.0) )#* self.scale)
+            self.check_closest(letter, cursor_x, cursor_y)
+
             oy += letter.box_height
 
     def get_more_letters(self, letter=None):
@@ -235,7 +254,7 @@ class Dash:
         else:
             chain = letter.word_ptr
         for l in chain:
-            ln = LetterNode(l.letter, l.weight)
+            ln = LetterNode(l.letter, l.weight, parent=l.parent)
             ln.word_ptr = l
             res.append(ln)
         #print "letter", letter

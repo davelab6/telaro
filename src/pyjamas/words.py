@@ -30,12 +30,12 @@ def get_test_letters():
                 idx = p.index(l)
                 p = p[idx]
             except ValueError:
-                ln = LetterNode(l, 0.0)
+                ln = LetterNode(l, 0.0, parent=p)
                 p.append(ln)
                 p = ln
-        p.append(LetterNode(" ", 0.0))
-        p.append(LetterNode(",", 0.0))
-        p.append(LetterNode(".", 0.0))
+        p.append(LetterNode(" ", 0.0, parent=p))
+        p.append(LetterNode(",", 0.0, parent=p))
+        p.append(LetterNode(".", 0.0, parent=p))
 
     assign_equal_weight(res)
     recurse_sort(res)

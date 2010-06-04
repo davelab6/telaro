@@ -1,8 +1,9 @@
 class LetterNode(list):
 
-    def __init__(self, letter, weight, childnodes=None):
+    def __init__(self, letter, weight, childnodes=None, parent=None):
         self.letter = letter
         self.weight = weight
+        self.parent = parent
         if childnodes is None:
             childnodes = []
         self.word_ptr = None
