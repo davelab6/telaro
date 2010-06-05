@@ -3,7 +3,7 @@ import math
 
 from pyjamas.ui.AbsolutePanel import AbsolutePanel
 from pyjamas.ui.RootPanel import RootPanel
-from pyjamas.ui.Label import Label
+from pyjamas.ui.HTML import HTML
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
@@ -74,7 +74,7 @@ class Dash:
         self.p = AbsolutePanel(Width="100%", Height="100%",
                                StyleName="dashpanel")
         RootPanel().add(self.p)
-        self.log = Label("log")
+        self.log = HTML("log", Width="200px", Height="100px")
 
         self.cwidth = 700.0
         self.cheight = 700.0
@@ -104,7 +104,8 @@ class Dash:
         self.mouse_pos_x = w2
         self.mouse_pos_y = h2
 
-        self.draw()
+        self.redraw_required = True
+        #self.draw()
 
         Timer(50, self)
 
@@ -138,7 +139,7 @@ class Dash:
         diff_time = new_time - self.cur_time
         self.cur_time = new_time
 
-        self.log.setText("time: %.2f" % self.cur_time)
+        self.log_txt = "time: %.2f<br/>test<br/>" % self.cur_time
 
         scale = diff_time / (self.scale)
 
@@ -164,6 +165,8 @@ class Dash:
         if self.redraw_required:
             self.draw()
 
+        self.log.setHTML(self.log_txt)
+
         Timer(50, self)
 
     def draw(self):
@@ -186,6 +189,9 @@ class Dash:
                                     self.cheight)
         self.target_scale = scale
 
+        self.log_txt += "scale: %f<br/>" % self.scale
+        self.log_txt += "targetscale: %f<br/>" % self.target_scale
+
         #print "scale:", self.scale, self.target_scale
 
         x1 = self.offset_x + (self.cwidth / self.scale)
@@ -196,9 +202,9 @@ class Dash:
         self.canvas.clear()
         self.canvas.saveContext()
 
-        self.canvas.setFillStyle(Color("#888"))
-        self.canvas.setLineWidth(1)
-        self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
+        #self.canvas.setFillStyle(Color("#888"))
+        #self.canvas.setLineWidth(1)
+        #self.canvas.fillRect(0, 0, self.cwidth, self.cheight)
 
         self.display_letters(None, 0.0, 0.0, self.cwidth, self.cheight,
                                 self.root_node, 0)
