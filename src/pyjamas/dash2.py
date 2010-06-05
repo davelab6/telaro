@@ -333,7 +333,7 @@ class Dash:
 
 
 if __name__ == '__main__':
-    pyjd.setup("./index.html")
+    pyjd.setup("./public/index.html")
     d = Dash()
     pyjd.run()
 
