@@ -3,6 +3,7 @@ import math
 
 from pyjamas.ui.AbsolutePanel import AbsolutePanel
 from pyjamas.ui.RootPanel import RootPanel
+from pyjamas.ui.Label import Label
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
@@ -73,11 +74,13 @@ class Dash:
         self.p = AbsolutePanel(Width="100%", Height="100%",
                                StyleName="dashpanel")
         RootPanel().add(self.p)
+        self.log = Label("log")
 
         self.cwidth = 700.0
         self.cheight = 700.0
         self.canvas = GWTCanvas(self.cwidth, self.cheight)
-        self.p.add(self.canvas)
+        self.p.add(self.canvas, 0, 0)
+        self.p.add(self.log, self.cwidth+10, 0)
         self.canvas.resize(self.cwidth, self.cheight)
         self.cwidth = 700.0
         self.cheight = 700.0
@@ -135,6 +138,8 @@ class Dash:
         diff_time = new_time - self.cur_time
         self.cur_time = new_time
 
+        self.log.setText("time: %.2f" % self.cur_time)
+
         scale = diff_time / (self.scale)
 
         #print self.move_allowed, "%.3f" % diff_time, self.mouse_pos_x, self.mouse_pos_y
@@ -173,7 +178,7 @@ class Dash:
         self.get_closest(0.0, 0.0, self.cwidth, self.cheight,
                                 self.root_node)
 
-        print self.closest
+        #print self.closest
 
         scale = calc_scale(self.closest[0], self.closest[1],
                                   self.offset_x,
@@ -181,7 +186,7 @@ class Dash:
                                     self.cheight)
         self.target_scale = scale
 
-        print "scale:", self.scale, self.target_scale
+        #print "scale:", self.scale, self.target_scale
 
         x1 = self.offset_x + (self.cwidth / self.scale)
         y1 = self.offset_y + (self.cheight / self.scale)
