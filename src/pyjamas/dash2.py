@@ -44,21 +44,12 @@ def calc_scale(letter1, letter2, x, y, height):
     l2_y = letter2.y + letter2.box_height/2
     d1 = pow(dist(l1_x - x, l1_y - y), 0.5)
     d2 = pow(dist(l2_x - x, l2_y - y), 0.5)
-    #if d1 < d2:
-    #    scale_letter = letter1
-    #else:
-    #    scale_letter = letter2
     min_d1 = min(height/2, d1)
     min_d2 = min(height/2, d2)
-    #scale1 = ((height/2 - min_d1) / (height/2))
-    #scale2 = ((height/2 - min_d2) / (height/2))
-    #print "calc_scale", x, y, d1, d2, min_d, height, scale_letter.box_height, scale
-    #return 1.0
-    #return 0.5
+
+    # divide by 8, seems to work.  no idea why.
     max_scale1 = height / letter1.box_height / 8
     max_scale2 = height / letter2.box_height / 8
-    #max_scale1 *= scale1
-    #max_scale2 *= scale2
 
     # ok.  complicated.  the closer the cursor is, the more "relevant"
     # the scaling.  d1 or d2 equal to zero means _spot_ on cursor.
@@ -75,8 +66,6 @@ def calc_scale(letter1, letter2, x, y, height):
 
     return max_scale
 
-    return (max_scale - 1.0) * scale + 1.0
-    
 class Dash:
 
     def __init__(self):
