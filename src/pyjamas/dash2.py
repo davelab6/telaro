@@ -2,6 +2,7 @@ import pyjd
 import math
 
 from pyjamas.ui.AbsolutePanel import AbsolutePanel
+from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.ui.HTML import HTML
 
@@ -65,25 +66,27 @@ def calc_scale(letter1, letter2, x, y, height):
 
     max_scale += scale_diff * proportion
 
+    return 1.0
+
     return max_scale
 
 class Dash:
 
     def __init__(self):
 
-        self.p = AbsolutePanel(Width="100%", Height="100%",
+        self.p = VerticalPanel(Width="700px", Height="700px",
                                StyleName="dashpanel")
         RootPanel().add(self.p)
-        self.log = HTML("log", Width="200px", Height="100px")
+        self.log = HTML("log", Width="500px", Height="100px")
 
-        self.cwidth = 700.0
-        self.cheight = 700.0
+        self.cwidth = 200.0
+        self.cheight = 200.0
         self.canvas = GWTCanvas(self.cwidth, self.cheight)
-        self.p.add(self.canvas, 0, 0)
-        self.p.add(self.log, self.cwidth+10, 0)
         self.canvas.resize(self.cwidth, self.cheight)
-        self.cwidth = 700.0
-        self.cheight = 700.0
+        self.p.add(self.canvas)
+        self.p.add(self.log)
+        self.cwidth = 200.0
+        self.cheight = 200.0
         #self.offset_x = 423.0-233#240.0
         #self.offset_y = 153.0-220#-100.0
         self.offset_x = 0.0
@@ -171,6 +174,7 @@ class Dash:
 
     def draw(self):
 
+        self.canvas.resize(self.cwidth, self.cheight)
         self.redraw_required = False
 
         w2 = self.cwidth / 2.0
@@ -199,8 +203,8 @@ class Dash:
 
         #print "redbox", self.offset_x, self.offset_y, x1, y1
 
-        self.canvas.clear()
         self.canvas.saveContext()
+        self.canvas.clear()
 
         #self.canvas.setFillStyle(Color("#888"))
         #self.canvas.setLineWidth(1)
