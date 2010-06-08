@@ -20,11 +20,14 @@
 	Also add information on how to contact you by electronic and paper mail.
 
 	
-	fileparse.py includes a simple calculator with variables, copied from 
+	telaro.py includes a simple calculator with variables, copied from 
 	O'Reilly's "Lex and Yacc," page 63, and a class-based example contributed 
 	to PLY by David McNab.
 	
 	TODO: check this is legal, and explain the file better.
+	TODO: en.wikipedia.org/wiki/Markov_blanket has a nice diagram of how it works
+	
+	./telaro.py -l adhesion -d /usr/share/dict/scowl/british-words.55 < TrainingTexts/adhesion.txt > output.txt
 """
 
 import sys
