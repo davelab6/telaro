@@ -66,8 +66,6 @@ def calc_scale(letter1, letter2, x, y, height):
 
     max_scale += scale_diff * proportion
 
-    return 1.0
-
     return max_scale
 
 class Dash:
@@ -79,14 +77,14 @@ class Dash:
         RootPanel().add(self.p)
         self.log = HTML("log", Width="500px", Height="100px")
 
-        self.cwidth = 200.0
-        self.cheight = 200.0
+        self.cwidth = 700.0
+        self.cheight = 700.0
         self.canvas = GWTCanvas(self.cwidth, self.cheight)
         self.canvas.resize(self.cwidth, self.cheight)
         self.p.add(self.canvas)
         self.p.add(self.log)
-        self.cwidth = 200.0
-        self.cheight = 200.0
+        self.cwidth = 700.0
+        self.cheight = 700.0
         #self.offset_x = 423.0-233#240.0
         #self.offset_y = 153.0-220#-100.0
         self.offset_x = 0.0

@@ -8,3 +8,21 @@ body {
   border: 1px solid #000000;
 }
 
+.kbdbutton {
+  border: 1px solid #000000;
+}
+
+.kbdbuttonenabled {
+  background-color: #a0ffa0;
+}
+
+.kbdbuttondisabled {
+  background-color: #cccccc;
+}
+
+.kbdbuttonspace {
+  background-color: #f0fff0;
+  border: 1px solid #000000;
+  width: 100%;
+}
+
