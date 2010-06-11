@@ -11,10 +11,14 @@ from lettertree import LetterNode, pprint_letters
 from words import get_test_letters
 
 from keyboard import Qwerty
+from textbox import T9TextArea
 
 from pyjamas.Timer import Timer
 from pyjamas import DOM
 from time import time
+
+# test
+available_keys = "shoplift ,." + "SHOPLIFT"
 
 class Dash:
 
@@ -26,6 +30,8 @@ class Dash:
         self.log = HTML("log", Width="500px", Height="100px")
 
         self.kbd = Qwerty()
+        self.tb = T9TextArea(available_keys)
+        self.p.add(self.tb)
         self.p.add(self.kbd)
         self.p.add(self.log)
 
@@ -39,9 +45,9 @@ class Dash:
         self.redraw_required = True
         #self.draw()
 
-        self.kbd.setFocus(True)
+        self.tb.setFocus(True)
         #self.kbd.addMouseListener(self)
-        self.kbd.activate("adhesion")
+        self.kbd.activate(available_keys)
 
     def onMouseDown(self, sender, x, y):
         self.move_allowed = True
