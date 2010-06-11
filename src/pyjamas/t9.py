@@ -285,7 +285,7 @@ class Dash:
 
 
 if __name__ == '__main__':
-    pyjd.setup("./public/dash2.html")
+    pyjd.setup("./public/t9.html")
     d = Dash()
     pyjd.run()
 
