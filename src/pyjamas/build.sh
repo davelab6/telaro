@@ -4,4 +4,4 @@
 
 options="$*"
 #if [ -z $options ] ; then options="-O";fi
-~/src/sf.pyjamas/svn-pyjamas/pyjamas/bin/pyjsbuild --no-print-statements $options dash2
+~/src/sf.pyjamas/svn-pyjamas/pyjamas/bin/pyjsbuild --no-print-statements $options t9
