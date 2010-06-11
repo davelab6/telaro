@@ -45,3 +45,4 @@ class Qwerty(FlexTable, FocusHandler, FocusMixin):
             else:
                 button.removeStyleName("kbdbuttonenabled")
                 button.addStyleName("kbdbuttondisabled")
+

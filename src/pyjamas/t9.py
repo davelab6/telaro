@@ -17,8 +17,6 @@ from pyjamas.Timer import Timer
 from pyjamas import DOM
 from time import time
 
-# test
-available_keys = "shoplift ,." + "SHOPLIFT"
 
 class Dash:
 
@@ -30,7 +28,7 @@ class Dash:
         self.log = HTML("log", Width="500px", Height="100px")
 
         self.kbd = Qwerty()
-        self.tb = T9TextArea(available_keys)
+        self.tb = T9TextArea(self, '')
         self.p.add(self.tb)
         self.p.add(self.kbd)
         self.p.add(self.log)
@@ -46,8 +44,65 @@ class Dash:
         #self.draw()
 
         self.tb.setFocus(True)
-        #self.kbd.addMouseListener(self)
+        self.tb.addChangeListener(self)
+        self.tb.addClickListener(self)
+        self.old_text = None
+        self.old_pos = None
+        self.textNotify('')
+
+    def textNotify(self, text):
+        """ determine text position, next letters, pass them to on-screen
+            keyboard
+        """
+        pos = self.tb.getCursorPos()
+        if text == self.old_text and pos == self.old_pos:
+            return
+        self.old_text = text
+        self.old_pos = pos
+
+        # first, hunt through the letters-tree.
+        node = self.letters
+        print "pos", pos, text
+        for i, t in enumerate(text):
+            if i == pos:
+                break
+            print "checking", t
+            next_node = None
+            for l in node:
+                print "\tagainst", l.letter
+                if len(l) == 0:
+                    more = self.get_more_letters(l)
+                    for m in more:
+                        l.append(m)
+                if t == l.letter:
+                    next_node = l
+                    break
+            if not next_node:
+                self.tb.setSelectionRange(i, len(self.tb.getText()))
+                return
+            node = next_node
+        
+        available_keys = ''
+        for l in node:
+            letter = l.letter
+            ul = letter.upper()
+            available_keys += letter
+            if ul != letter:
+                available_keys += ul
         self.kbd.activate(available_keys)
+        self.tb.setAvailableKeys(available_keys)
+
+    def execute(self):
+        self.onChange(self.tb)
+
+    def onClick(self, sender):
+        print "click"
+        text = self.tb.getText()
+        self.textNotify(text)
+
+    def onChange(self, sender):
+        text = sender.getText()
+        self.textNotify(text)
 
     def onMouseDown(self, sender, x, y):
         self.move_allowed = True
