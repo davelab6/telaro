@@ -15,6 +15,7 @@ from textbox import T9TextArea
 
 from pyjamas.Timer import Timer
 from pyjamas import DOM
+from pyjamas import log
 from time import time
 
 
@@ -62,14 +63,14 @@ class Dash:
 
         # first, hunt through the letters-tree.
         node = self.letters
-        print "pos", pos, text
+        log.writebr("pos %d %s" % (pos, text))
         for i, t in enumerate(text):
             if i == pos:
                 break
-            print "checking", t
+            #log.writebr("checking %s" % t)
             next_node = None
             for l in node:
-                print "\tagainst", l.letter
+                #log.writebr("\tagainst %s" % l.letter)
                 if len(l) == 0:
                     more = self.get_more_letters(l)
                     for m in more:

@@ -28,11 +28,11 @@ class T9TextArea(TextArea):
     def checkKey(self, sender, keycode, modifiers):
         DeferredCommand.add(self.sink)
         if int(keycode) in KeyboardListener.KEYS:
-            print "nope", keycode, KeyboardListener.KEYS
+            #print "nope", keycode, KeyboardListener.KEYS
             return
-        print type(keycode), type(self.available_keys[0])
+        #print type(keycode), type(self.available_keys[0])
         if int(keycode) not in self.available_keys:
-            print "stop", keycode, self.available_keys
+            #print "stop", keycode, self.available_keys
             event = DOM.eventGetCurrentEvent()
             DOM.eventPreventDefault(event)
             return
