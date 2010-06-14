@@ -3,7 +3,10 @@ import math
 
 from pyjamas.ui.AbsolutePanel import AbsolutePanel
 from pyjamas.ui.VerticalPanel import VerticalPanel
+from pyjamas.ui.HorizontalPanel import HorizontalPanel
+from pyjamas.ui.CaptionPanel import CaptionPanel
 from pyjamas.ui.RootPanel import RootPanel
+from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.HTML import HTML
 
 #from letter import Letters
@@ -33,9 +36,20 @@ class Dash:
         self.tb = T9TextArea(self, '')
         self.wb = WordBox(Width="700px", Height="800px",
                           StyleName="wordbox")
-        self.p.add(self.tb)
-        self.p.add(self.kbd)
-        self.p.add(self.wb)
+
+        wp = HorizontalPanel(Width="100%")
+        self.restrictword = TextBox()
+        wp.add(self.restrictword)
+        wp.add(self.wb)
+        wp = CaptionPanel("Words", wp)
+
+        sp = HorizontalPanel(Width="100%")
+        sp.add(self.kbd)
+        sp.add(self.tb)
+        sp = CaptionPanel("Sentences", sp)
+
+        self.p.add(wp)
+        self.p.add(sp)
         self.p.add(self.log)
 
         self.word_chain = get_test_letters()
