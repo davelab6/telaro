@@ -7,7 +7,9 @@ from pyjamas.ui.HorizontalPanel import HorizontalPanel
 from pyjamas.ui.CaptionPanel import CaptionPanel
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.ui.TextBox import TextBox
+from pyjamas.ui.Button import Button
 from pyjamas.ui.HTML import HTML
+from pyjamas import Window
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
@@ -38,8 +40,10 @@ class Dash:
                           StyleName="wordbox")
 
         wp = HorizontalPanel(Width="100%")
-        self.restrictword = TextBox()
+        self.restrictword = TextBox(Text="shoplift")
+        self.loadbutton = Button("search", self)
         wp.add(self.restrictword)
+        wp.add(self.loadbutton)
         wp.add(self.wb)
         wp = CaptionPanel("Words", wp)
 
@@ -130,6 +134,11 @@ class Dash:
         self.onChange(self.tb)
 
     def onClick(self, sender):
+        if sender == self.loadbutton:
+            txt = self.restrictword.getText()
+            Window.alert("TODO: load words for %s" % txt)
+            return
+
         print "click"
         text = self.tb.getText()
         self.textNotify(text)
