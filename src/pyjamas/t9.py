@@ -8,10 +8,11 @@ from pyjamas.ui.HTML import HTML
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
-from words import get_test_letters
+from words import get_test_letters, get_test_words
 
 from keyboard import Qwerty
 from textbox import T9TextArea
+from wordbox import WordBox
 
 from pyjamas.Timer import Timer
 from pyjamas import DOM
@@ -23,18 +24,23 @@ class Dash:
 
     def __init__(self):
 
-        self.p = VerticalPanel(Width="700px", Height="700px",
+        self.p = VerticalPanel(Width="700px", 
                                StyleName="dashpanel")
         RootPanel().add(self.p)
         self.log = HTML("log", Width="500px", Height="100px")
 
         self.kbd = Qwerty()
         self.tb = T9TextArea(self, '')
+        self.wb = WordBox(Width="700px", Height="800px",
+                          StyleName="wordbox")
         self.p.add(self.tb)
         self.p.add(self.kbd)
+        self.p.add(self.wb)
         self.p.add(self.log)
 
         self.word_chain = get_test_letters()
+        self.wb.setWords(get_test_words())
+
         # TODO: make a fake "top level" LetterNode, which these are added to
         self.letters = self.get_more_letters()
         self.root_node = self.letters

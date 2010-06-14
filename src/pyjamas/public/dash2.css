@@ -25,3 +25,21 @@ body {
   width: 100%;
 }
 
+.wordpanel {
+  padding: 2px;
+}
+.wordbox {
+  border: 1px solid #000000;
+}
+
+.flowpanelword {
+  border: 1px solid #000000;
+  margin: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.flowpanelwordhighlight {
+  background-color: #a0ffa0;
+}
+
