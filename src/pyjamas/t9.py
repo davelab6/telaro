@@ -57,6 +57,17 @@ class Dash:
         self.old_pos = None
         self.textNotify('')
 
+    def getLastWord(self, txt):
+        length = len(txt) - 1
+        word = ''
+        while length >= 0:
+            c = txt[length]
+            if not c.isalnum():
+                break
+            word = c + word
+            length -= 1
+        return word
+
     def textNotify(self, text):
         """ determine text position, next letters, pass them to on-screen
             keyboard
@@ -98,6 +109,8 @@ class Dash:
                 available_keys += ul
         self.kbd.activate(available_keys)
         self.tb.setAvailableKeys(available_keys)
+        lastword = self.getLastWord(text)
+        self.wb.markWords(lastword)
 
     def execute(self):
         self.onChange(self.tb)
