@@ -52,3 +52,6 @@ def deletePage (request, num):
 	t.delete()
 	return getPages(request)
 
+@jsonremote(service)
+def getwords (request, selector):
+    return [selector]

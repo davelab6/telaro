@@ -355,7 +355,7 @@ class Dash:
 class WordService(JSONProxy):
     def __init__(self):
         #JSONProxy.__init__(self, "/lib-wsgi/words/services/",
-        JSONProxy.__init__(self, "/",
+        JSONProxy.__init__(self, "/services/pages/",
                 ["getwords",
                 ])
 
