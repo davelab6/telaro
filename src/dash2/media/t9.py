@@ -10,6 +10,7 @@ from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Button import Button
 from pyjamas.ui.HTML import HTML
 from pyjamas import Window
+from pyjamas.JSONService import JSONProxy
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
@@ -24,6 +25,8 @@ from pyjamas import DOM
 from pyjamas import log
 from time import time
 
+import sys
+IN_BROWSER = sys.platform in ['mozilla', 'ie6', 'opera', 'oldmoz', 'safari']
 
 class Dash:
 
@@ -74,6 +77,8 @@ class Dash:
         self.old_text = None
         self.old_pos = None
         self.textNotify('')
+
+        self.remote = WordService()
 
     def getLastWord(self, txt):
         length = len(txt) - 1
@@ -136,7 +141,7 @@ class Dash:
     def onClick(self, sender):
         if sender == self.loadbutton:
             txt = self.restrictword.getText()
-            Window.alert("TODO: load words for %s" % txt)
+            self.remote.getwords(txt, self)
             return
 
         print "click"
@@ -326,9 +331,40 @@ class Dash:
                     letter.append(l)
             oy += height
 
+    def onRemoteResponse(self, response, request_info):
+        self.log.setHTML(str(response))
+
+    def onRemoteError(self, code, errobj, request_info):
+        # onRemoteError gets the HTTP error code or 0 and
+        # errobj is an jsonrpc 2.0 error dict:
+        #     {
+        #       'code': jsonrpc-error-code (integer) ,
+        #       'message': jsonrpc-error-message (string) ,
+        #       'data' : extra-error-data
+        #     }
+        message = errobj['message']
+        if code != 0:
+            self.log.setHTML("HTTP error %d: %s" %
+                                (code, message))
+        else:
+            code = errobj['code']
+            self.log.setHTML("JSONRPC Error %s: %s" %
+                                (code, message))
+
+
+class WordService(JSONProxy):
+    def __init__(self):
+        #JSONProxy.__init__(self, "/lib-wsgi/words/services/",
+        JSONProxy.__init__(self, "/",
+                ["getwords",
+                ])
 
 if __name__ == '__main__':
-    pyjd.setup("./public/t9.html")
+    if IN_BROWSER:
+        pyjd.setup("./public/t9.html")
+    else:
+        # python ./manage.py runserver jobbie...
+        pyjd.setup("http://127.0.0.1:8000/")
     d = Dash()
     pyjd.run()
 
