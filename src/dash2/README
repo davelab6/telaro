@@ -1,32 +1,15 @@
-For Software prerequisites, see INSTALL.txt
+Telaro - http://code.google.com/p/telaro/
+==========================================
 
-A very brief walk through of how to get Dash2 running:
+Telaro is the Venetian word for "loom."
 
-Create the db:
+Telaro weaves readable but randomly-generated sentences from a list of 
+words and key characters.
 
-    * mysql -u root
-    * > CREATE DATABASE dash2;
-    * > grant all privilages to dash2.* to 'dash2'@'localhost'; (or possibly > grant all on dash2.* to 'dash2'@'localhost';)
-    * > exit;
+This is useful for type designers, who prototype fonts by drawing a 
+small number of letters and then typesetting a text which only uses 
+those small number of letters yet can be read normally.
 
-Create the tables:
+Please see INSTALL.txt for installation instructions. 
 
-    * cd dash2
-    * python manage.py syncdb
-
-Build the javascript:
-
-    * cd media
-    * vim build.sh
-    * (edit this so that it points to the build.py of pyjamas)
-    * ./build.sh
-
-Run the server:
-
-    * python manage.py runserver
-
-Test it out:
-
-    * To "view" the site: In your browser, goto:
-      http://127.0.0.1:8000/
-
+http://code.google.com/p/telaro/wiki/Home has more information.
