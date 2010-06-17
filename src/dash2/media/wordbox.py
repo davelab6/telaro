@@ -16,7 +16,7 @@ class WordBox(ScrollPanel):
 
     def createBoxes(self):
         while self.table.getWidgetCount():
-            self.table.removeWidget(0)
+            self.table.remove(0)
         for w in self.words:
             el = DOM.createDiv()
             DOM.setStyleAttribute(el, "float", "left")

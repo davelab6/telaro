@@ -14,7 +14,7 @@ from pyjamas.JSONService import JSONProxy
 
 #from letter import Letters
 from lettertree import LetterNode, pprint_letters
-from words import get_test_letters, get_test_words
+from words import get_letter_chain, get_test_words
 
 from keyboard import Qwerty
 from textbox import T9TextArea
@@ -42,11 +42,13 @@ class Dash:
         self.wb = WordBox(Width="700px", Height="800px",
                           StyleName="wordbox")
 
-        wp = HorizontalPanel(Width="100%")
+        wp = VerticalPanel(Width="100%")
         self.restrictword = TextBox(Text="shoplift")
         self.loadbutton = Button("search", self)
-        wp.add(self.restrictword)
-        wp.add(self.loadbutton)
+        sp = HorizontalPanel()
+        sp.add(self.restrictword)
+        sp.add(self.loadbutton)
+        wp.add(sp)
         wp.add(self.wb)
         wp = CaptionPanel("Words", wp)
 
@@ -55,16 +57,9 @@ class Dash:
         sp.add(self.tb)
         sp = CaptionPanel("Sentences", sp)
 
-        self.p.add(wp)
         self.p.add(sp)
+        self.p.add(wp)
         self.p.add(self.log)
-
-        self.word_chain = get_test_letters()
-        self.wb.setWords(get_test_words())
-
-        # TODO: make a fake "top level" LetterNode, which these are added to
-        self.letters = self.get_more_letters()
-        self.root_node = self.letters
 
         self.cur_time = time()
 
@@ -74,11 +69,21 @@ class Dash:
         self.tb.setFocus(True)
         self.tb.addChangeListener(self)
         self.tb.addClickListener(self)
-        self.old_text = None
-        self.old_pos = None
-        self.textNotify('')
 
         self.remote = WordService()
+
+        words = get_test_words()
+        self.set_words(words)
+
+    def set_words(self, words):
+        self.old_text = None
+        self.old_pos = None
+        self.word_chain = get_letter_chain(words)
+        self.wb.setWords(words)
+        # TODO: make a fake "top level" LetterNode, which these are added to
+        self.letters = self.get_more_letters()
+        self.root_node = self.letters
+        self.textNotify('')
 
     def getLastWord(self, txt):
         length = len(txt) - 1
@@ -332,7 +337,8 @@ class Dash:
             oy += height
 
     def onRemoteResponse(self, response, request_info):
-        self.log.setHTML(str(response))
+        if request_info.method == 'getwords':
+            self.set_words(response)
 
     def onRemoteError(self, code, errobj, request_info):
         # onRemoteError gets the HTTP error code or 0 and

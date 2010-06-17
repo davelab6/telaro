@@ -27,7 +27,7 @@ def get_test_words():
     global words
     return words
 
-def get_test_letters():
+def get_letter_chain(words):
     res = []
     for w in words:
         p = res
@@ -57,5 +57,5 @@ def get_test_letters():
     return res
 
 if __name__ == '__main__':
-    l = get_test_letters()
+    l = get_test_letters(get_test_words())
     pprint_letters(l)
