@@ -35,16 +35,17 @@ class Dash:
         self.p = VerticalPanel(Width="700px", 
                                StyleName="dashpanel")
         RootPanel().add(self.p)
-        self.log = HTML("log", Width="500px", Height="100px")
+        self.log = HTML("log")
 
         self.kbd = Qwerty()
-        self.tb = T9TextArea(self, '')
+        self.tb = T9TextArea(self, '', Width="100%", Height="200px")
         self.wb = WordBox(Width="700px", Height="800px",
                           StyleName="wordbox")
 
         wp = VerticalPanel(Width="100%")
         self.restrictword = TextBox(Text="shoplift")
         self.loadbutton = Button("search", self)
+        self.telaroise = Button("telaroise", self)
         sp = HorizontalPanel()
         sp.add(self.restrictword)
         sp.add(self.loadbutton)
@@ -52,13 +53,14 @@ class Dash:
         wp.add(self.wb)
         wp = CaptionPanel("Words", wp)
 
-        sp = HorizontalPanel(Width="100%")
+        sp = VerticalPanel(Width="100%")
         sp.add(self.kbd)
         sp.add(self.tb)
         sp = CaptionPanel("Sentences", sp)
 
         self.p.add(sp)
         self.p.add(wp)
+        self.p.add(self.telaroise)
         self.p.add(self.log)
 
         self.cur_time = time()
@@ -108,7 +110,7 @@ class Dash:
 
         # first, hunt through the letters-tree.
         node = self.letters
-        log.writebr("pos %d %s" % (pos, text))
+        #log.writebr("pos %d %s" % (pos, text))
         for i, t in enumerate(text):
             if i == pos:
                 break
@@ -148,8 +150,12 @@ class Dash:
             txt = self.restrictword.getText()
             self.remote.getwords(txt, self)
             return
+        elif sender == self.telaroise:
+            txt = self.tb.getText()
+            self.remote.getrandomsentence(txt, self)
+            return
 
-        print "click"
+        #print "click"
         text = self.tb.getText()
         self.textNotify(text)
 
@@ -339,6 +345,9 @@ class Dash:
     def onRemoteResponse(self, response, request_info):
         if request_info.method == 'getwords':
             self.set_words(response)
+        elif request_info.method == 'getrandomsentence':
+            response = "<pre>%s</pre>" % response
+            self.log.setHTML(response)
 
     def onRemoteError(self, code, errobj, request_info):
         # onRemoteError gets the HTTP error code or 0 and
@@ -363,6 +372,7 @@ class WordService(JSONProxy):
         #JSONProxy.__init__(self, "/lib-wsgi/words/services/",
         JSONProxy.__init__(self, "/services/pages/",
                 ["getwords",
+                 "getrandomsentence",
                 ])
 
 if __name__ == '__main__':

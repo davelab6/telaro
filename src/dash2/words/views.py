@@ -6,6 +6,7 @@ from django.template import loader
 from django.shortcuts import render_to_response
 from django.template import RequestContext, Template
 from django.http import HttpResponseRedirect, HttpResponse
+from telaro import Text
 import urllib
 
 service = JSONRPCService()
@@ -72,3 +73,9 @@ def getwords (request, selector):
     words = words.keys()
     words.sort()
     return words
+
+@jsonremote(service)
+def getrandomsentence(response, words):
+    calc = Text()
+    return calc.run(words)
+
