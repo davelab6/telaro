@@ -1,0 +1,16 @@
+Software prerequisites (assumes debian/testing):
+----------------------
+
+apt-get install python-ply
+apt-get install pyjamas
+apt-get install pyjamas-desktop (optional but recommended)
+apt-get install mysql-server
+apt-get install python-mysqldb
+apt-get install python-django
+svn checkout http://django-evolution.googlecode.com/svn/trunk/ \
+             django-evolution-read-only && \
+             cd !$ && \
+             python setup.py install
+
+Then follow the instructions in README
+

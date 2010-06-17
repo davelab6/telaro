@@ -1,15 +1,6 @@
-The WebPage application allows editing of basic web pages.
-Its closest equivalent is "googlepages".  The application is -
-surprise - pure javascript.  Therefore, once a page has been loaded
-from the server via the django JSONRPC service, it need not ever
-be loaded again (unless the user refreshes the whole site).
+For Software prerequisites, see INSTALL.txt
 
-When editing pages, Links containing "#pagename" are converted into
-pyjamas Hyperlink widgets.  Hyperlink widgets trigger onHistoryChanged.
-As the "History" technique is used, browser history (back, forward)
-is preserved.
-
-A very brief walk through of how to get WebPage running:
+A very brief walk through of how to get Dash2 running:
 
 Create the db:
 
@@ -23,16 +14,12 @@ Create the tables:
     * cd dash2
     * python manage.py syncdb
 
-Add fckeditor
-
-    * go find fckeditor on the internet
-    * copy fckeditor (or symlink) to public/fckeditor
-
 Build the javascript:
 
-    * vim media/build.sh
+    * cd media
+    * vim build.sh
     * (edit this so that it points to the build.py of pyjamas)
-    * media/build.sh
+    * ./build.sh
 
 Run the server:
 
@@ -40,9 +27,6 @@ Run the server:
 
 Test it out:
 
-    * To enter the "admin" interface, goto:
-      http://127.0.0.1:8000/site_media/output/WebPage.html?#admin
-
     * To "view" the site: In your browser, goto:
-      http://127.0.0.1:8000/site_media/output/WebPage.html
+      http://127.0.0.1:8000/
 
