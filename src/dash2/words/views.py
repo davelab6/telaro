@@ -52,6 +52,23 @@ def deletePage (request, num):
 	t.delete()
 	return getPages(request)
 
+def check_all_letters_in(letters, word):
+    for w in word:
+        if w.lower() not in letters and w.upper() not in letters:
+            return False
+    return True
+
 @jsonremote(service)
 def getwords (request, selector):
-    return [selector]
+
+    words_file = "/usr/share/dict/words"
+
+    words = {}
+    for w in open(words_file).readlines():
+        w = w.strip()
+        if w and check_all_letters_in(selector, w):
+            words[w.lower()] = 1
+
+    words = words.keys()
+    words.sort()
+    return words
