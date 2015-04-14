@@ -1,0 +1,45 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.dashpanel {
+  background-color: #f0fff0;
+  border: 1px solid #000000;
+}
+
+.kbdbutton {
+  border: 1px solid #000000;
+}
+
+.kbdbuttonenabled {
+  background-color: #a0ffa0;
+}
+
+.kbdbuttondisabled {
+  background-color: #cccccc;
+}
+
+.kbdbuttonspace {
+  border: 1px solid #000000;
+  width: 100%;
+}
+
+.wordpanel {
+  padding: 2px;
+}
+.wordbox {
+  border: 1px solid #000000;
+}
+
+.flowpanelword {
+  border: 1px solid #000000;
+  margin: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.flowpanelwordhighlight {
+  background-color: #a0ffa0;
+}
+

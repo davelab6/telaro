@@ -1,0 +1,64 @@
+Telaro - http://code.google.com/p/telaro/
+==========================================
+
+This is a very brief walk through of how to get the "Dash2" part of Telaro 
+running. 
+
+Installation
+=======================
+
+Debian/testing:
+-------------------
+
+    $ apt-get install python-ply;
+    $ apt-get install pyjamas;
+    $ apt-get install pyjamas-desktop; # (optional but recommended)
+    $ apt-get install mysql-server;
+    $ apt-get install python-mysqldb;
+    $ apt-get install python-django;
+    $ svn checkout http://django-evolution.googlecode.com/svn/trunk/ \
+      django-evolution-read-only;
+    $ cd django-evolution-read-only;
+    $ sudo python setup.py install;
+
+Fedora 12+
+-------------------
+
+Install Pyjamas from source
+
+    $ yum install python-ply mysql-server MySQL-python Django 
+    $ svn checkout http://django-evolution.googlecode.com/svn/trunk/ \
+      django-evolution-read-only;
+    $ cd django-evolution-read-only;
+    $ sudo python setup.py install;
+
+Setup
+-------------------
+
+Create the db:
+
+    $ mysql -u root -p
+    > CREATE DATABASE dash2;
+    > grant all on dash2.* to 'dash2'@'localhost';
+    > exit;
+
+Create the tables:
+
+    $ cd dash2
+    $ python manage.py syncdb
+
+Build the javascript:
+
+    $ cd media
+    $ vim build.sh
+    Edit this so that it points to the build.py of pyjamas
+    $ ./build.sh;
+    $ cd ..;
+
+Run the server:
+
+    python manage.py runserver
+
+Browse to:
+
+    http://127.0.0.1:8000
